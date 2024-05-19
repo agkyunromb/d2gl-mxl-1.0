@@ -58,7 +58,7 @@ void MiniMap::draw()
 	static tm gmt_time;
 
 	if (*d2::screen_shift == SCREENPANEL_NONE) {
-		if (!d2::isEscMenuOpen() && !*d2::automap_on) {
+		if (!d2::isEscMenuOpen() && !d2::automapenabled) {
 			m_bg->setFlags(2, 3, 100);
 			m_map->setFlags(5, 0, 100);
 			App.context->pushObject(m_bg);
@@ -68,7 +68,7 @@ void MiniMap::draw()
 		if (App.hd_text.active) {
 			time_t now = time(0);
 			localtime_s(&gmt_time, &now);
-			swprintf_s(time_str, L" | ÿc\x34%.2d:%.2d", gmt_time.tm_hour, gmt_time.tm_min);
+			swprintf_s(time_str, L"%.2d:%.2d", gmt_time.tm_hour, gmt_time.tm_min);
 
 			const auto old_size = modules::HDText::Instance().getTextSize();
 			d2::setTextSizeHooked(19);

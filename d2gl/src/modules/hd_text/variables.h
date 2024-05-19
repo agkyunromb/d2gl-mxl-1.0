@@ -77,7 +77,8 @@ inline const std::array<wchar_t, 18> g_default_colors = {
 	L'\x39', // 9.Yellow (Rare Items)
 	L'\x3A', // 10.Dark Green
 	L'\x3B', // 11.Purple
-	L'\x2F', // 12.White (Brighter than Light Gray)
+	// L'\x2F', // 12.White (Brighter than Light Gray)
+	L'\x3A', // 12(10).Dark Green
 	L'\x2E', // 13.Messed Up White (Same as above but text is messed up)
 	L'\x09', // 14.Teal
 	L'\x0C', // 15.Light Gray
@@ -100,6 +101,12 @@ inline const std::vector<D2PopupInfo> g_popups = {
 	{ { 256, 176 }, {   8, 176 } }, // popupok.dc6 // passwordbox.dc6 // PopUpOKCancel.DC6
 	{ { 256, 200 }, {  70, 200 } }, // DifficultyLevels.dc6
 	{ { 256, 256 }, {   0,   0 } }, // TileableDialog.dc6
+	{ { 256, 220 }, {  74, 220 } }, // Median DifficultyLevels
+};
+
+inline const std::vector<D2PopupInfo> g_median_popups = {
+	{ { 256, 220 }, {  74, 220 } }, // Median DifficultyLevels
+	{ { 256, 256 }, {  82,  10 } }, // Median StoreFilter
 };
 
 inline const std::vector<D2TextMetrics> g_text_size = {

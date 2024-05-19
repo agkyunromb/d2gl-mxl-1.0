@@ -212,6 +212,25 @@ void uiDrawCursorItem()
 	App.context->onStageChange();
 }
 
+void __cdecl Sgd2fr_D2Client_SetTileCullingBound(CullingSpec* culling_spec, int left, int top, int right, int bottom)
+{
+	if (culling_spec == NULL) {
+		return;
+	}
+
+	SetRect(&culling_spec->draw_window_rect, left, top, right, bottom);
+
+	RECT* tile_culling_rect = &culling_spec->tile_culling_window;
+	SetRect(tile_culling_rect, -160, -160, 1024 + 160, 768 + 160);
+	// if (GetIsPerspectiveModeEnabled()) {
+	//	tile_culling_rect->top -= 160;
+	//	tile_culling_rect->left -= 320;
+	//	tile_culling_rect->right += 320;
+	// }
+
+	culling_spec->flags |= 0x1;
+}
+
 void uiDrawEnd()
 {
 	App.game.draw_stage = DrawStage::Cursor;
@@ -223,6 +242,11 @@ void __stdcall drawImageHooked(CellContext* cell, int x, int y, uint32_t gamma, 
 	if (App.hd_cursor && App.game.draw_stage >= DrawStage::Cursor)
 		return;
 
+	if (App.game.draw_stage == DrawStage::Map) {
+		App.game.draw_stage = DrawStage::Map2;
+		App.context->onStageChange();
+	}
+
 	if (modules::HDText::Instance().drawImage(cell, x, y, draw_mode)) {
 		const auto pos = modules::MotionPrediction::Instance().drawImage(x, y, D2DrawFn::Image, gamma, draw_mode);
 		drawImage(cell, pos.x, pos.y, gamma, draw_mode, palette);
@@ -233,6 +257,11 @@ void __stdcall drawImageHooked(CellContext* cell, int x, int y, uint32_t gamma, 
 
 void __stdcall drawPerspectiveImageHooked(CellContext* cell, int x, int y, uint32_t gamma, int draw_mode, int screen_mode, uint8_t* palette)
 {
+	if (App.game.draw_stage == DrawStage::Map) {
+		App.game.draw_stage = DrawStage::Map2;
+		App.context->onStageChange();
+	}
+
 	const auto pos = modules::MotionPrediction::Instance().drawImage(x, y, D2DrawFn::PerspectiveImage);
 	drawPerspectiveImage(cell, pos.x, pos.y, gamma, draw_mode, screen_mode, palette);
 }
@@ -247,6 +276,11 @@ void __stdcall drawShiftedImageHooked(CellContext* cell, int x, int y, uint32_t 
 
 void __stdcall drawVerticalCropImageHooked(CellContext* cell, int x, int y, int skip_lines, int draw_lines, int draw_mode)
 {
+	if (App.game.draw_stage == DrawStage::Map) {
+		App.game.draw_stage = DrawStage::Map2;
+		App.context->onStageChange();
+	}
+
 	if (modules::HDText::Instance().isActive() && App.game.draw_stage >= DrawStage::UI) {
 		if (y < 150 || (*d2::screen_shift >= SCREENPANEL_LEFT && y < (int)*d2::screen_height - 100 && x < (int)*d2::screen_width / 2))
 			return;
@@ -264,6 +298,11 @@ void __stdcall drawClippedImageHooked(CellContext* cell, int x, int y, void* cro
 
 void __stdcall drawImageFastHooked(CellContext* cell, int x, int y, uint8_t palette_index)
 {
+	if (App.game.draw_stage == DrawStage::Map) {
+		App.game.draw_stage = DrawStage::Map2;
+		App.context->onStageChange();
+	}
+
 	const auto pos = modules::MotionPrediction::Instance().drawImage(x, y, D2DrawFn::ImageFast);
 	drawImageFast(cell, pos.x, pos.y, palette_index);
 }
@@ -334,6 +373,12 @@ void __fastcall drawNormalTextHooked(const wchar_t* str, int x, int y, uint32_t 
 	if (ISGLIDE3X() && !App.hd_text.active && color == 15)
 		color = 5;
 
+	// uint32_t len = getNormalTextWidth(str);
+	// drawLine(x, y, x + len, y, 100, 255);
+	// drawLine(x, y - 15, x + len, y - 15, 100, 255);
+	// drawLine(x, y - 15, x, y, 100, 255);
+	// drawLine(x + len, y - 15, x + len, y, 100, 255);
+
 	const auto pos = modules::MotionPrediction::Instance().drawText(str, x, y, D2DrawFn::NormalText);
 	if (!modules::HDText::Instance().drawText(str, pos.x, pos.y, color, centered))
 		drawNormalText(str, pos.x, pos.y, color, centered);
@@ -369,6 +414,10 @@ uint32_t __fastcall getNormalTextWidthHooked(const wchar_t* str)
 
 uint32_t __fastcall getNormalTextNWidthHooked(const wchar_t* str, const int n_chars)
 {
+	// trace_log("%ws	%i", str, n_chars);
+	if (wcscmp(str, L"") == 0 || App.game.screen == GameScreen::Menu && n_chars <= 3)
+		return getNormalTextNWidth(str, n_chars);
+
 	if (modules::HDText::Instance().isActive())
 		return modules::HDText::Instance().getNormalTextWidth(str, n_chars);
 	return getNormalTextNWidth(str, n_chars);
@@ -450,6 +499,19 @@ void drawSubTextC()
 void levelEntryText()
 {
 	modules::HDText::Instance().startEntryText();
+}
+
+// mxl
+void __fastcall AutomapStartHooked()
+{
+	automapDrawBegin();
+	return AutomapStart();
+}
+
+void __fastcall AutomapEndHooked()
+{
+	automapDrawEnd();
+	return AutomapEnd();
 }
 
 }

@@ -258,6 +258,14 @@ glm::ivec2 MotionPrediction::drawText(const wchar_t* str, int x, int y, D2DrawFn
 		}
 	}
 
+	if (fn == D2DrawFn::FramedText) {
+		const auto unit = d2::getSelectedUnit();
+
+		if (unit && m_active) {
+			pos -= m_global_offset;
+		}
+	}
+
 	return pos;
 }
 

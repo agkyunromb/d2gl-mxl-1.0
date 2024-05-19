@@ -34,6 +34,7 @@
 
 namespace d2gl {
 
+bool automapenabled;
 Context::Context()
 {
 	PIXELFORMATDESCRIPTOR pfd;
@@ -669,6 +670,11 @@ void Context::onStageChange()
 		case DrawStage::World:
 			break;
 		case DrawStage::UI:
+			d2::automapenabled = *d2::automap_on;
+			if (modules::MiniMap::Instance().isActive() && !*d2::automap_on) {
+				*d2::automap_on = 1;
+			}
+
 			if (ISGLIDE3X() && (App.bloom.active || App.lut.selected) && *d2::screen_shift != SCREENPANEL_BOTH) {
 				flushVertices();
 				m_command_buffer[m_frame_index].pushCommand(CommandType::PreFx, m_current_blend_index);
@@ -679,7 +685,15 @@ void Context::onStageChange()
 				flushVertices();
 				m_blend_locked = true;
 				m_command_buffer[m_frame_index].pushCommand(CommandType::SetBlendState, 3);
-				setVertexFlagW(1 + !*d2::automap_on);
+				setVertexFlagW(1 + !d2::automapenabled);
+			}
+			break;
+		case DrawStage::Map2:
+			if (modules::MiniMap::Instance().isActive()) {
+				flushVertices();
+				m_blend_locked = false;
+				m_command_buffer[m_frame_index].pushCommand(CommandType::SetBlendState, m_current_blend_index);
+				setVertexFlagW(0);
 			}
 			break;
 		case DrawStage::HUD:
@@ -690,6 +704,7 @@ void Context::onStageChange()
 				setVertexFlagW(0);
 
 				modules::MiniMap::Instance().draw();
+				*d2::automap_on = d2::automapenabled;
 			}
 			modules::HDText::Instance().drawEntryText();
 			modules::HDText::drawFpsCounter();

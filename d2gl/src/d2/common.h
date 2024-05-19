@@ -69,6 +69,9 @@ typedef uint32_t(__fastcall* getFramedTextSize_t)(const wchar_t* str, uint32_t* 
 typedef uint16_t(__fastcall* getFontHeight_t)(void);
 typedef uint32_t(__fastcall* setTextSize_t)(uint32_t size);
 
+typedef void(__fastcall* AutomapStart_t)(void);
+typedef void(__fastcall* AutomapEnd_t)(void);
+
 extern uint32_t* screen_width;
 extern uint32_t* screen_height;
 extern uint32_t* screen_shift;
@@ -78,6 +81,7 @@ extern bool* perspective;
 extern bool* esc_menu_open;
 extern bool* is_alt_clicked;
 extern int is_unit_hovered;
+extern bool automapenabled;
 
 extern uint32_t* is_in_game;
 extern UnitAny* player_unit;
@@ -115,6 +119,8 @@ extern uint32_t* automap_on;
 extern int* automap_type;
 extern uintptr_t d2ClientFn1_O;
 extern uintptr_t d2ClientFn2_O;
+extern uintptr_t d2ClientUIStartJmp_O;
+extern uintptr_t d2ClientPtr1_O;
 
 extern findUnit_t findUnitClient;
 extern findUnit_t findUnitServer;
@@ -155,6 +161,8 @@ extern getUnitState_t getUnitState_Fn;
 extern getUnitRoom_t getUnitRoom;
 extern getLevelNoByRoom_t getLevelNoByRoom;
 extern uintptr_t getLevelName_Fn;
+extern AutomapStart_t AutomapStart;
+extern AutomapEnd_t AutomapEnd;
 
 extern UnitAny* currently_drawing_unit;
 extern uint32_t currently_drawing_weather_particles;

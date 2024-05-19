@@ -41,6 +41,8 @@ __declspec(naked) void gameDrawBeginStub()
 	}
 }
 
+/*
+
 __declspec(naked) void automapDrawBeginStub()
 {
 	__asm
@@ -64,15 +66,47 @@ __declspec(naked) void automapDrawEndStub()
 		ret
 	}
 }
+*/
 
-__declspec(naked) void uiDrawBeginStub()
+__declspec(naked) void uiDrawBeginStub()	// mxl
 {
+	/*
 	__asm
 	{
 		pushad
 		call uiDrawBegin
 		popad
 		ret
+	}
+	*/
+	__asm {
+		mov edx, DWORD PTR DS : [d2ClientPtr1_O]
+		mov edx, DWORD PTR DS : [edx]
+		push edx
+		pushad
+		call uiDrawBegin
+		popad
+		jmp d2ClientUIStartJmp_O;
+	}
+}
+
+__declspec(naked) void Sgd2fr_SetTileCullingBoundPatch()
+{
+	__asm
+	{
+		push ebp
+		mov ebp, esp
+
+		push eax
+		push ecx
+		push edx
+		push dword ptr [ebp + 8]
+		push esi
+		call Sgd2fr_D2Client_SetTileCullingBound
+		add esp, 20
+
+		leave
+		ret 4
 	}
 }
 

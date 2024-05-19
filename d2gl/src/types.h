@@ -49,6 +49,7 @@ enum class DrawStage : uint8_t {
 	World,
 	UI,
 	Map,
+	Map2,
 	HUD,
 	CursorItem,
 	Cursor,

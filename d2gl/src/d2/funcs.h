@@ -94,5 +94,9 @@ void drawSubTextA();
 void drawSubTextB();
 void drawSubTextC();
 void levelEntryText();
+// mxl
+void __fastcall AutomapStartHooked();
+void __fastcall AutomapEndHooked();
+void __cdecl Sgd2fr_D2Client_SetTileCullingBound(CullingSpec* culling_spec, int left, int top, int right, int bottom);
 
 }

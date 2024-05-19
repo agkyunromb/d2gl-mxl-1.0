@@ -27,7 +27,16 @@ Also run game.exe with `-3dfx -log` it will create `d2gl.log` and attach this al
 
 ## Installation
 
-See [Installation](https://github.com/bayaraa/d2gl/wiki/Installation).
+### Installation on the new MXL Launcher
+- Open the launcher and click the settings icon (gear icon, next to the big red button)
+- Hover over the warning symbol next to "Unofficial Graphics Drivers", read and acknowledge this notice.
+- Check/Enable Glide3x.dll if you wish to use Glide as your rendering backend or Ddraw.dll for DDraw
+- Close the launcher
+- Download from [Releases](https://github.com/GavinK88/d2gl-mxl-1.0/releases)
+- Extract the files from the Release.zip into the folder MXL is using (this is C:\Games\median-xl by default if you did not specify during installation)
+- Open the launcher and launch your game if everything is up to date.
+
+See [Installation](https://github.com/bayaraa/d2gl/wiki/Installation) for instructions .
 
 ## Configuration
 
@@ -36,6 +45,10 @@ See [Configuration](https://github.com/bayaraa/d2gl/wiki/Configuration).
 ## Compatibility
 
 See [Compatibility](https://github.com/bayaraa/d2gl/wiki/Compatibility).
+
+## Development
+
+Development was tested on: VS 2022 17.0.4 (failed to compile due to linker errors), VS 2022 17.7.4 (failed to compile). VS 2022 17.9.7 (success)
 
 ## Credits
 
@@ -54,6 +67,7 @@ Diablo II modding community (The Phrozen Keep) and **Everyone** who makes d2 mod
 - Shader Minifier (laurentlb).
 - SPIRV-Cross, glslang (KhronosGroup).
 - Detours (Microsoft).
+- MXL pre-1.0 D2GL changes (Pooquer)
 
 ## Some Screenshots
 

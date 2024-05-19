@@ -24,12 +24,13 @@ uint32_t __stdcall mpqLoadStub(const char* dll, const char* mpqfile, const char*
 
 void gameDrawBeginStub();
 
-void automapDrawBeginStub();
-void automapDrawEndStub();
+//void automapDrawBeginStub();
+//void automapDrawEndStub();
 
 void uiDrawBeginStub();
 void uiDrawCursorItemStub();
 void uiDrawEndStub();
+void Sgd2fr_SetTileCullingBoundPatch();
 
 void drawUnitStubStack();
 void drawUnitStubESI();

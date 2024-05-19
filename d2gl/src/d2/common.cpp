@@ -115,6 +115,15 @@ getUnitRoom_t getUnitRoom = (getUnitRoom_t)getProc((DLL_D2COMMON), (), (), (), (
 getLevelNoByRoom_t getLevelNoByRoom = (getLevelNoByRoom_t)getProc((DLL_D2COMMON), (), (), (), (), (), (), (-10691), ());
 uintptr_t getLevelName_Fn = getProc((DLL_D2CLIENT), (0x88420), (0x839F0), (0x9DC10), (0x61AA0), (0x8B1A0), (0xBE240), (0x18250), (0x53E70));
 
+// mxl
+uintptr_t d2ClientUIStartJmp_O = getProc((DLL_D2CLIENT), (), (), (), (), (), (0x4437B), (), ());
+uintptr_t d2ClientPtr1_O = getProc((DLL_D2CLIENT), (), (), (), (), (), (0x11C3C4), (), ());
+AutomapStart_t AutomapStart = (AutomapStart_t)getProc((DLL_D2CLIENT), (), (), (), (), (), (0x60C40), (), ()); // automap start: walls etc
+AutomapEnd_t AutomapEnd = (AutomapEnd_t)getProc((DLL_D2CLIENT), (), (), (), (), (), (0x5C5C0), (), ()); // overlays end
+
+// Offset D2WinUnitHover = getOffset((DLL_D2WIN), (), (-10124, 0xF7E9C1FA, 0x1F3), (-10175, 0x03C2572B, 0x1A3), (-10037, 0x03C2572B, 0x1A3), (-10201, 0x03C2572B, 0x1A3), (-10110, 0x03C2572B, 0x1A3), (-10124, 0x03C2572B, 0x1A3), (0x10318B, 0x03C22BF0));
+// DWORD D2WinUnitHoverRet = helpers::GetProcOffset(D2WinUnitHover) + (isVer(V_110) ? 5 : 6);
+
 // d2client + 0x291F8 : 1 2 3 4 (potion keys)
 // d2client + 0x27708 : life XX/XX
 // d2client + 0x277C7 : Mana XX/XX
@@ -130,6 +139,7 @@ UnitAny* currently_drawing_item = nullptr;
 std::unique_ptr<Patch> patch_minimap;
 std::unique_ptr<Patch> patch_motion_prediction;
 std::unique_ptr<Patch> patch_hd_text;
+bool automapenabled;
 
 void initHooks()
 {
@@ -155,7 +165,9 @@ void initHooks()
 
 	Patch game_loop = Patch();
 	game_loop.add(PatchType::Call, getOffset((DLL_D2CLIENT), (0x9B3D, 0xE87A5F0B), (0xA2A2, 0xE8B51B0C), (0x89A2F, 0xE84A37F8), (0x3356F, 0xE85E9CFD), (0x7D1BF, 0xE84801F9), (0x44E2F, 0xE81A85FC), (0x45E7F, 0xE8E473FC), (0x4F256, 0xE8E5550C)), 5, (uintptr_t)gameDrawBeginStub);
-	game_loop.add(PatchType::Auto, getOffset((DLL_D2CLIENT, 0x5333DB3B), (0x865AC, 0x33ED894C), (0x81B7C, 0x33DB894C), (0xA35F6), (0x669F6), (0x90156), (0xC39E6), (0x1D3E6), (0x56EE1, 0x8BEC83EC)), isVerMax(V_110) ? 6 : 5, (uintptr_t)uiDrawBeginStub);
+	// game_loop.add(PatchType::Auto, getOffset((DLL_D2CLIENT, 0x5333DB3B), (0x865AC, 0x33ED894C), (0x81B7C, 0x33DB894C), (0xA35F6), (0x669F6), (0x90156), (0xC39E6), (0x1D3E6), (0x56EE1, 0x8BEC83EC)), isVerMax(V_110) ? 6 : 5, (uintptr_t)uiDrawBeginStub);
+	game_loop.add(PatchType::Jump, getOffset((DLL_D2CLIENT), (), (), (), (), (), (0x44374), (), ()), 7, (uintptr_t)uiDrawBeginStub); // mxl // 0x4437B start
+	game_loop.add(PatchType::Jump, getOffset((DLL_D2CLIENT), (), (), (), (), (), (0x8A4D0), (), ()), 0xB5335 - 0xB5330, (uintptr_t)Sgd2fr_SetTileCullingBoundPatch);
 	game_loop.add(PatchType::Auto, getOffset((DLL_D2CLIENT, 0x2BC803CA), (0xB59A5, 0x8B442404), (0xB7B71, 0x8B442404), (0x38FD2), (0x28A82), (0x9F692), (0x16B72), (0x14FF2), (0x68578, 0xD1E82BC8)), 5, (uintptr_t)uiDrawCursorItemStub); // Cursor item
 	game_loop.add(PatchType::Auto, getOffset((DLL_D2CLIENT, 0x508D5424), (0xB58CC, 0x6AFF5203), (0xB7A9C, 0x6AFF5203), (0x38461), (0x27F11), (0x9EB21), (0x16001), (0x14481), (0x684A5, 0x518D45B8)), 5, (uintptr_t)uiDrawEndStub); // Cursor changed
 	game_loop.add(PatchType::Auto, getOffset((DLL_D2CLIENT, 0x52894424), (0xB5606), (0xB7776), (0x38D46), (0x287F6), (0x9F406), (0x168E6), (0x14D66), (0x68435, 0x57568D55)), 5, (uintptr_t)uiDrawEndStub); // Default cursor
@@ -176,8 +188,8 @@ void initHooks()
 	sleep_fix.toggle(true);
 
 	Patch automap_loop = Patch();
-	automap_loop.add(PatchType::Call, getOffset((DLL_D2CLIENT, 0xE84DDFFF), (0x27943, 0xE8785606), (0x2DCC3, 0xE808A705), (0x5AB5E, 0xE8BDD2FF), (0x52B3E), (0x405DE), (0x6269E, 0xE84DD3FF), (0x7343E), (0x5AD87, 0xE894C7FF)), 5, (uintptr_t)automapDrawBeginStub);
-	automap_loop.add(PatchType::Call, getOffset((DLL_D2CLIENT), (0x867A0, 0xE87B7400), (0x81D6E, 0xE8FD7500), (0xA36B1, 0xE8DAB2FF), (0x66AB1, 0xE8BABBFF), (0x90211, 0xE88ABBFF), (0xC3AA1, 0xE82AB6FF), (0x1D4A1, 0xE87AB9FF), (0x56FAA, 0xE861E5FF)), 5, (uintptr_t)automapDrawEndStub);
+	//automap_loop.add(PatchType::Call, getOffset((DLL_D2CLIENT, 0xE84DDFFF), (0x27943, 0xE8785606), (0x2DCC3, 0xE808A705), (0x5AB5E, 0xE8BDD2FF), (0x52B3E), (0x405DE), (0x6269E, 0xE84DD3FF), (0x7343E), (0x5AD87, 0xE894C7FF)), 5, (uintptr_t)automapDrawBeginStub);
+	//automap_loop.add(PatchType::Call, getOffset((DLL_D2CLIENT), (0x867A0, 0xE87B7400), (0x81D6E, 0xE8FD7500), (0xA36B1, 0xE8DAB2FF), (0x66AB1, 0xE8BABBFF), (0x90211, 0xE88ABBFF), (0xC3AA1, 0xE82AB6FF), (0x1D4A1, 0xE87AB9FF), (0x56FAA, 0xE861E5FF)), 5, (uintptr_t)automapDrawEndStub);
 	automap_loop.toggle(true);
 
 	if (ISGLIDE3X()) {
@@ -254,6 +266,8 @@ void initHooks()
 	DetourAttach(&(PVOID&)getFramedTextSize, getFramedTextSizeHooked);
 	DetourAttach(&(PVOID&)getFontHeight, getFontHeightHooked);
 	DetourAttach(&(PVOID&)setTextSize, setTextSizeHooked);
+	DetourAttach(&(PVOID&)AutomapStart, AutomapStartHooked);
+	DetourAttach(&(PVOID&)AutomapEnd, AutomapEndHooked);
 	DetourTransactionCommit();
 }
 
@@ -285,6 +299,8 @@ void destroyHooks()
 	DetourDetach(&(PVOID&)getFramedTextSize, getFramedTextSizeHooked);
 	DetourDetach(&(PVOID&)getFontHeight, getFontHeightHooked);
 	DetourDetach(&(PVOID&)setTextSize, setTextSizeHooked);
+	DetourDetach(&(PVOID&)AutomapStart, AutomapStartHooked);
+	DetourDetach(&(PVOID&)AutomapEnd, AutomapEndHooked);
 	DetourTransactionCommit();
 }
 

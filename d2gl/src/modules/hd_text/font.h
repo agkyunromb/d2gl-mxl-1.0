@@ -23,6 +23,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 namespace d2gl {
 
+struct First_line {
+	float m_text_size_x = 0.0f;
+	float m_line_width_x = 0.0f;
+};
+
 struct FontCreateInfo {
 	std::string name;
 	float size = 0.0f;
@@ -52,6 +57,9 @@ class Font {
 	float m_letter_spacing = 0.0f;
 	float m_shadow_intensity = 0.9f;
 	glm::vec2 m_offset = { 0.0f, 0.0f };
+
+	std::map<std::wstring, First_line> m_first_line;
+
 	float m_symbol_offset = 0.0f;
 
 	float m_smoothness = 5.0f;

@@ -293,7 +293,7 @@ GrContext_t Wrapper::grSstWinOpen(FxU32 hwnd, GrScreenResolution_t screen_resolu
 			App.game.size = App.game.custom_size;
 			trace_log("Applying custom size.");
 		} else
-			App.game.size = { *d2::screen_width, *d2::screen_height };
+			App.game.size = { 1024, 768 };
 	}
 	trace_log("Game requested screen size: %d x %d", App.game.size.x, App.game.size.y);
 
