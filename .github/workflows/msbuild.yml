@@ -49,4 +49,4 @@ jobs:
     - name: Upload to Release
       run: gh release upload ${{  github.ref_name }} Release.zip
       env: 
-        GITHUB_TOKEN: $ {{ github.TOKEN }}
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
