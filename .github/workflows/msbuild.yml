@@ -47,4 +47,4 @@ jobs:
       run: Compress-Archive -Path 'd2gl.mpq','.\bin\Release\ddraw.dll','.\bin\Release\glide3x.dll' -Destination Release.zip
 
     - name: Upload to Release
-      run: gh release upload ${{github.event.release.tag_name}} Release.zip
+      run: gh release upload ${{  github.ref_name }} Release.zip
