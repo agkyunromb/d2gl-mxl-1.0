@@ -175,16 +175,16 @@ void initHooks()
 	game_loop.toggle(true);
 
 	Patch fps_fix = Patch();
-	fps_fix.add(PatchType::Nop, getOffset((DLL_D2CLIENT), (0x9B5F, 0x392D400C), (0xA2C9, 0x85C0752B), (0x89A51, 0x391D2034), (0x33591, 0x391D8036), (0x7D1E1, 0x391D2834), (0x44E51, 0x391D9034), (0x45EA1, 0x391DF046), (0x4F278, 0x391D0407)), isVer(V_110) ? 4 : 8); // InGame: Unlimited
-	fps_fix.add(PatchType::Swap, getOffset((DLL_D2WIN, 0x2881FF18), (0xEC0C, 0x6A195150), (0xD02B), (0xC63B), (0x13F5B), (0xD94B), (0x18A1B), (0xED6B), (0xFA62D)), 4, isVer(V_109d) ? 0x6A2D5150 : 0x1481FF18); // InMenu: 45fps
+	// fps_fix.add(PatchType::Nop, getOffset((DLL_D2CLIENT), (0x9B5F, 0x392D400C), (0xA2C9, 0x85C0752B), (0x89A51, 0x391D2034), (0x33591, 0x391D8036), (0x7D1E1, 0x391D2834), (0x44E51, 0x391D9034), (0x45EA1, 0x391DF046), (0x4F278, 0x391D0407)), isVer(V_110) ? 4 : 8); // InGame: Unlimited; already applied by MXL
+	// fps_fix.add(PatchType::Swap, getOffset((DLL_D2WIN, 0x2881FF18), (0xEC0C, 0x6A195150), (0xD02B), (0xC63B), (0x13F5B), (0xD94B), (0x18A1B), (0xED6B), (0xFA62D)), 4, isVer(V_109d) ? 0x6A2D5150 : 0x1481FF18); // InMenu: 45fps, this patch gets overridden by something (doesn't appear to be Sigma) but can't figure it out
 	fps_fix.toggle(true);
 
 	Patch sleep_fix = Patch();
-	sleep_fix.add(PatchType::Nop, getOffset((DLL_D2CLIENT, 0x6A0AFF15), (0x2635, 0x6A00FF15), (0x2684), (0x8BD14), (0x5D4A4), (0x6CFD4), (0x3CB94), (0x27724), (0x51C42)), 8);
+	//sleep_fix.add(PatchType::Nop, getOffset((DLL_D2CLIENT, 0x6A0AFF15), (0x2635, 0x6A00FF15), (0x2684), (0x8BD14), (0x5D4A4), (0x6CFD4), (0x3CB94), (0x27724), (0x51C42)), 8); already applied by MXL
 	sleep_fix.add(PatchType::Nop, getOffset((DLL_D2CLIENT, 0x6A00FFD3), (0x96C8, 0x55FFD783), (0x9E68, 0x53FFD783), (0x89288), (0x320B8), (0x7BD18), (0x43988), (0x44928), (0x4C711, 0x6A00FFD7)), isVerMax(V_110) ? 3 : 4);
 	sleep_fix.add(PatchType::Nop, getOffset((DLL_D2CLIENT, 0x6A00FFD3), (0x96EC, 0x55FFD783), (0x9E8C, 0x53FFD783), (0x892AD), (0x320DD), (0x7BD3D), (0x439AD), (0x4494D), (0x4C740, 0x6A00FFD7)), isVerMax(V_110) ? 3 : 4);
 	if (isVerMin(V_110) && isVerMax(V_113d))
-		sleep_fix.add(PatchType::Nop, getOffset((DLL_D2WIN), (), (0xD075, 0x50FF15C0), (0xC683, 0x50FF15A0), (0x13FA3, 0x50FF15A8), (0xD993, 0x50FF15A8), (0x18A63, 0x50FF15C8), (0xEDB3, 0x50FF15B8), ()), 7);
+		//sleep_fix.add(PatchType::Nop, getOffset((DLL_D2WIN), (), (0xD075, 0x50FF15C0), (0xC683, 0x50FF15A0), (0x13FA3, 0x50FF15A8), (0xD993, 0x50FF15A8), (0x18A63, 0x50FF15C8), (0xEDB3, 0x50FF15B8), ()), 7); // overridden by something, but not Sigma?? 
 	sleep_fix.toggle(true);
 
 	Patch automap_loop = Patch();
