@@ -968,30 +968,6 @@ void HDText::drawMonsterHealthBar(d2::UnitAny* unit)
 	font->drawText(name, text_pos, g_text_colors.at(text_color));
 	m_hovered_unit.color = 0;
 
-	if (App.show_monster_res) {
-		const auto s1 = d2::getUnitStat(unit, STAT_DMGREDUCTIONPCT);
-		const wchar_t* i1 = s1 >= 100 ? L"⛦" : L"";
-		const auto s2 = d2::getUnitStat(unit, STAT_MAGICDMGREDUCTIONPCT);
-		const wchar_t* i2 = s2 >= 100 ? L"⛦" : L"";
-		const auto s3 = d2::getUnitStat(unit, STAT_FIRERESIST);
-		const wchar_t* i3 = s3 >= 100 ? L"⛦" : L"";
-		const auto s4 = d2::getUnitStat(unit, STAT_LIGHTNINGRESIST);
-		const wchar_t* i4 = s4 >= 100 ? L"⛦" : L"";
-		const auto s5 = d2::getUnitStat(unit, STAT_COLDRESIST);
-		const wchar_t* i5 = s5 >= 100 ? L"⛦" : L"";
-		const auto s6 = d2::getUnitStat(unit, STAT_POISONRESIST);
-		const wchar_t* i6 = s6 >= 100 ? L"⛦" : L"";
-
-		static wchar_t res_str[100];
-		swprintf_s(res_str, L"ÿc\x34%s%d ÿc\x03⌁ ÿc\x38%s%d ÿc\x03⌁ ÿc\x31%s%d ÿc\x03⌁ ÿc\x39%s%d ÿc\x03⌁ ÿc\x33%s%d ÿc\x03⌁ ÿc\x32%s%d", i1, s1, i2, s2, i3, s3, i4, s4, i5, s5, i6, s6);
-
-		const auto font = getFont(20);
-		font->setShadow(1);
-		font->setMasking(false);
-
-		const auto text_size = font->getTextSize(res_str);
-		font->drawText(res_str, { center - text_size.x / 2.0f, bar_pos.y - 3.0f }, g_text_colors.at(16));
-	}
 }
 
 void HDText::drawPlayerHealthBar(d2::UnitAny* unit)
