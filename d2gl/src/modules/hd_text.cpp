@@ -1031,7 +1031,11 @@ void HDText::drawFpsCounter()
 	const auto old_size = HDText::Instance().getTextSize();
 	App.hd_text.active ? d2::setTextSizeHooked(19) : d2::setTextSizeHooked(6);
 	const auto width = d2::getNormalTextWidthHooked(str);
-	d2::drawNormalTextHooked(str, App.game.size.x / 2 - width / 2, App.game.size.y - 3, 4, 0);
+	if (App.hd_text.active) {
+		d2::drawNormalTextHooked(str, App.game.size.x / 2 - width / 2, App.game.size.y - 3, 4, 0);
+	} else {
+		d2::drawNormalTextHooked(str, App.game.size.x / 30 - width / 2, App.game.size.y - 750, 4, 0);
+	}
 	d2::setTextSizeHooked(old_size);
 }
 

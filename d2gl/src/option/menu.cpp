@@ -355,7 +355,7 @@ void Menu::draw()
 			drawCheckbox_m("HD Cursor", App.hd_cursor, "High-definition in game & menu screen cursor.", hd_cursor)
 				saveBool("Feature", "hd_cursor", App.hd_cursor);
 			drawSeparator();
-			drawCheckbox_m("HD Text", App.hd_text.active, "High-definition ingame texts.", hd_text)
+			drawCheckbox_m("HD Text", App.hd_text.active, "High-definition ingame texts. Use at your own risk.", hd_text)
 			{
 				d2::patch_hd_text->toggle(App.hd_text.active);
 				saveBool("Feature", "hd_text", App.hd_text.active);
