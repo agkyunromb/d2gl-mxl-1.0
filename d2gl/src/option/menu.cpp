@@ -180,10 +180,10 @@ void Menu::draw()
 	if (ImGui::BeginTabBar("tabs", ImGuiTabBarFlags_None)) {
 		ImGui::PopStyleVar();
 		ImGui::PopStyleColor();
-		ImGui::SetCursorPos({ 530.0f, 74.0f });
+		ImGui::SetCursorPos({ 450.0f, 74.0f });
 		ImGui::PushFont(m_fonts[14]);
 		ImGui::PushStyleColor(ImGuiCol_Text, m_colors[Color::Gray]);
-		ImGui::Text("D2GL v%s by Bayaraa.", App.version_str.c_str());
+		ImGui::Text("D2GL v%s by Bayaraa. MXL v%s", App.version_str.c_str(), App.mxl_ver.c_str());
 		ImGui::PopStyleColor();
 		ImGui::PopFont();	
 		// ImGui::SetTabItemClosed("Screen");

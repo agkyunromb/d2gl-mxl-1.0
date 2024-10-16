@@ -43,6 +43,7 @@ struct D2GLApp {
 	std::string ini_file = "d2gl.ini";
 	std::string mpq_file = "d2gl.mpq";
 	std::string log_file = "d2gl.log";
+	std::string mxl_ver = "{mxl.version}";
 
 	Api api = Api::Glide;
 	std::unique_ptr<Context> context;
