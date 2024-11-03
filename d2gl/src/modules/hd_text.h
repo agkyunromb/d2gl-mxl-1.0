@@ -97,7 +97,12 @@ public:
 	inline void setTextSize(uint32_t size) { m_text_size = size; }
 	inline uint32_t getTextSize() { return m_text_size; }
 	inline void borderedRect(bool draw = true) { m_bordered_rect = draw; }
-	inline Font* const getFont(uint32_t size) { return m_fonts[size].get(); }
+	inline Font* const getFont(uint32_t size) { 
+		if (size <= m_fonts.size())
+			return m_fonts[size].get();
+		else
+			return m_fonts[6].get();
+	}
 
 	void drawSubText(uint8_t fn = 1);
 	bool drawImage(d2::CellContext* cell, int x, int y, int draw_mode);
