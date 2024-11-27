@@ -70,7 +70,7 @@ int WINAPI ShowCursor(BOOL bShow)
 BOOL WINAPI SetCursorPos(int X, int Y)
 {
 	trace("locked: %d", App.cursor.locked);
-	if (App.hwnd && App.cursor.locked) {
+	if (App.hwnd) {
 		POINT pt = { (LONG)((float)X * App.cursor.scale.x), (LONG)((float)Y * App.cursor.scale.y) };
 		pt.x += App.viewport.offset.x;
 		pt.y += App.viewport.offset.y;
